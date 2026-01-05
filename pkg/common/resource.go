@@ -1,4 +1,4 @@
-package common
+package shared
 
 import (
 	"fmt"
@@ -7,83 +7,35 @@ import (
 	"github.com/google/uuid"
 )
 
-type ResourceType string
-
 type PlayerIDType uuid.UUID
 
 const (
-	ResourceTypeGameEvent      ResourceType = "GameEvents"
-	ResourceTypeBadge          ResourceType = "Badges"
-	ResourceTypeReplayFile     ResourceType = "ReplayFiles"
-	ResourceTypeMatch          ResourceType = "Matches"
-	ResourceTypeRound          ResourceType = "Rounds"
-	ResourceTypeGame           ResourceType = "Games"
-	ResourceTypePlayerProfile  ResourceType = "Players"        // composition of user
-	ResourceTypePlayerMetadata ResourceType = "PlayerMetadata" // composition of user
-	ResourceTypeTeam           ResourceType = "Teams"          // specification of user group
-	ResourceTypeSquad          ResourceType = "Squads"         // specification of user group
 	ResourceTypeGroup          ResourceType = "Groups"         // system group
 	ResourceTypePlan           ResourceType = "Plans"          //
 	ResourceTypeSubscription   ResourceType = "Subscriptions"  //
 	ResourceTypeUser           ResourceType = "Users"          // specification of group
-	ResourceTypeChannel        ResourceType = "Channels"       // specification of user group
-	ResourceTypeLeague         ResourceType = "Leagues"        // specification of user group
-	ResourceTypeTournament     ResourceType = "Tournaments"    // specification of user group
-	ResourceTypeProfile        ResourceType = "Profiles"       // specification of user group
-	ResourceTypeMembership     ResourceType = "Memberships"    // specification of user group
 	ResourceTypePage           ResourceType = "Pages"          //
-	ResourceTypeFriends        ResourceType = "Friends"
-	ResourceTypeList           ResourceType = "List" // recurse root resources (?)
+	ResourceTypeList           ResourceType = "List"           // recurse root resources (?)
 	ResourceTypePayment        ResourceType = "Payments"
 	ResourceTypeWallet         ResourceType = "Wallets"
-	// ResourceTypeMe         ResourceType = "Me"
-	// ResourceTypeCustom     ResourceType = "Custom"
-	// ResourceTypePublic     ResourceType = "Public"
-	// ResourceTypePublicAny  ResourceType = "Public(Anyone with the link)"
-	// ResourceTypePrivate   ResourceType = "Private"
-	// ResourceTypeNamespace ResourceType = "Namespaces"
-	ResourceTypeTag       ResourceType = "Tags"
-	ResourceTypeChallenge ResourceType = "Challenges" // Bug reports, VAR, round restart requests
+	ResourceTypeTag            ResourceType = "Tags"
 )
 
 var ResourceTypes = []ResourceType{
-	ResourceTypeGameEvent,
-	ResourceTypeBadge,
-	ResourceTypeReplayFile,
-	ResourceTypeMatch,
-	ResourceTypeRound,
-	ResourceTypeGame,
-	ResourceTypePlayerProfile,
-	ResourceTypePlayerMetadata,
-	ResourceTypeTeam,
-	ResourceTypeSquad,
 	ResourceTypeGroup,
+	ResourceTypePlan,
+	ResourceTypeSubscription,
 	ResourceTypeUser,
-	ResourceTypeChannel,
-	ResourceTypeLeague,
-	ResourceTypeTournament,
-	ResourceTypeProfile,
-	ResourceTypeMembership,
 	ResourceTypePage,
-	ResourceTypeFriends,
 	ResourceTypeList,
+	ResourceTypePayment,
+	ResourceTypeWallet,
 	ResourceTypeTag,
-	ResourceTypeChallenge,
 }
 
 var ResourceKeyMap = map[ResourceType]string{
-	ResourceTypeGameEvent:     "game_event_id",
-	ResourceTypeBadge:         "badge_id",
-	ResourceTypeReplayFile:    "replay_file_id",
-	ResourceTypeMatch:         "match_id",
-	ResourceTypeRound:         "round_id",
-	ResourceTypeGame:          "game_id",
-	ResourceTypePlayerProfile: "player_id",
-	ResourceTypeTeam:          "team_id",
-	ResourceTypeGroup:         "group_id",
-	ResourceTypeUser:          "user_id",
-	ResourceTypeProfile:       "profile_id",
-	ResourceTypeChallenge:     "challenge_id",
+	ResourceTypeGroup: "group_id",
+	ResourceTypeUser:  "user_id",
 }
 
 func GetResourceFieldID(resourcePart string) (string, error) {

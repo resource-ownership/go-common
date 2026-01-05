@@ -1,4 +1,4 @@
-package common
+package shared
 
 type ContextKey string
 
@@ -10,9 +10,8 @@ const (
 	UserIDKey   ContextKey = "user_id"
 
 	// Parameters
-	GameIDParamKey  ContextKey = "game_id"
-	MatchIDParamKey ContextKey = "match_id"
 	ResourceIDKey   ContextKey = "resource_id"
+	GameIDParamKey  ContextKey = "game_id"
 
 	AudienceKey            ContextKey = "aud"
 	AuthenticatedKey       ContextKey = "auth"

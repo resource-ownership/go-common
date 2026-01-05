@@ -1,8 +1,10 @@
-package common
+package shared_test
 
 import (
 	"testing"
 	"time"
+
+	shared "github.com/resource-ownership/go-common/pkg/common"
 )
 
 func TestValidateSearchParameters(t *testing.T) {
@@ -16,18 +18,18 @@ func TestValidateSearchParameters(t *testing.T) {
 
 	tests := []struct {
 		name              string
-		searchParams      []SearchAggregation
+		searchParams      []shared.SearchAggregation
 		queryableFields   map[string]bool
 		expectedError     string
 		maxRecursiveDepth int
 	}{
 		{
 			name: "Valid Single Value Param",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							ValueParams: []SearchableValue{
+							ValueParams: []shared.SearchableValue{
 								{Field: "GameID", Values: []interface{}{"123"}},
 							},
 						},
@@ -39,11 +41,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Invalid Single Value Param",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							ValueParams: []SearchableValue{
+							ValueParams: []shared.SearchableValue{
 								{Field: "InvalidField", Values: []interface{}{"123"}},
 							},
 						},
@@ -55,11 +57,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Valid Wildcard Value Param",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							ValueParams: []SearchableValue{
+							ValueParams: []shared.SearchableValue{
 								{Field: "Header.*", Values: []interface{}{"123"}},
 							},
 						},
@@ -71,11 +73,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Invalid Wildcard Value Param",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							ValueParams: []SearchableValue{
+							ValueParams: []shared.SearchableValue{
 								{Field: "InvalidPrefix.*", Values: []interface{}{"123"}},
 							},
 						},
@@ -87,11 +89,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Valid Date Param",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							DateParams: []SearchableDateRange{
+							DateParams: []shared.SearchableDateRange{
 								{Field: "Timestamp", Min: &time.Time{}, Max: &time.Time{}},
 							},
 						},
@@ -103,11 +105,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Valid Duration Param",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							DurationParams: []SearchableDurationRange{
+							DurationParams: []shared.SearchableDurationRange{
 								{Field: "Duration", Min: &validDuration, Max: &validDuration2},
 							},
 						},
@@ -119,11 +121,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Invalid Duration Param",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							DurationParams: []SearchableDurationRange{
+							DurationParams: []shared.SearchableDurationRange{
 								{Field: "InvalidField", Min: &invalidDuration, Max: &invalidDuration2},
 							},
 						},
@@ -135,11 +137,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Valid Recursive Depth",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							ValueParams: []SearchableValue{
+							ValueParams: []shared.SearchableValue{
 								{Field: "Header.Filestamp", Values: []interface{}{"HLTV"}},
 							},
 						},
@@ -152,11 +154,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Invalid Recursive Depth",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							ValueParams: []SearchableValue{
+							ValueParams: []shared.SearchableValue{
 								{Field: "Header.Filestamp", Values: []interface{}{"123"}},
 							},
 						},
@@ -169,11 +171,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Invalid Wildcard in Nested Field (Date)",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							DateParams: []SearchableDateRange{
+							DateParams: []shared.SearchableDateRange{
 								{Field: "Header.InvalidSubField.*", Min: &time.Time{}, Max: &time.Time{}},
 							},
 						},
@@ -185,11 +187,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Invalid Wildcard in Nested Field (Duration)",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							DurationParams: []SearchableDurationRange{
+							DurationParams: []shared.SearchableDurationRange{
 								{Field: "Header.InvalidSubField.*", Min: &validDuration, Max: &validDuration2},
 							},
 						},
@@ -201,11 +203,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		},
 		{
 			name: "Disallowed Field (ValueParam) with Wildcard Allowed",
-			searchParams: []SearchAggregation{
+			searchParams: []shared.SearchAggregation{
 				{
-					Params: []SearchParameter{
+					Params: []shared.SearchParameter{
 						{
-							ValueParams: []SearchableValue{
+							ValueParams: []shared.SearchableValue{
 								{Field: "Header.Filestamp", Values: []interface{}{"123"}},
 							},
 						},
@@ -219,11 +221,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		// // Invalid Date Range - Start After End
 		// {
 		// 	name: "Invalid Date Param - Start After End",
-		// 	searchParams: []SearchAggregation{
+		// 	searchParams: []shared.SearchAggregation{
 		// 		{
-		// 			Params: []SearchParameter{
+		// 			Params: []shared.SearchParameter{
 		// 				{
-		// 					DateParams: []SearchableDateRange{
+		// 					DateParams: []shared.SearchableDateRange{
 		// 						{Field: "Timestamp", Min: func() *time.Time {
 		// 							t := timeNow.Add(time.Microsecond * 1)
 		// 							return &t
@@ -240,11 +242,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		// 	// Invalid Duration Range - Start After End
 		// 	{
 		// 		name: "Invalid Duration Param - Start After End",
-		// 		searchParams: []SearchAggregation{
+		// 		searchParams: []shared.SearchAggregation{
 		// 			{
-		// 				Params: []SearchParameter{
+		// 				Params: []shared.SearchParameter{
 		// 					{
-		// 						DurationParams: []SearchableDurationRange{
+		// 						DurationParams: []shared.SearchableDurationRange{
 		// 							{Field: "Duration", Min: &validDuration2, Max: &validDuration},
 		// 						},
 		// 					},
@@ -257,11 +259,11 @@ func TestValidateSearchParameters(t *testing.T) {
 
 		// 	{
 		// 		name: "Missing 'Min' or 'Max' in Date Range",
-		// 		searchParams: []SearchAggregation{
+		// 		searchParams: []shared.SearchAggregation{
 		// 			{
-		// 				Params: []SearchParameter{
+		// 				Params: []shared.SearchParameter{
 		// 					{
-		// 						DateParams: []SearchableDateRange{
+		// 						DateParams: []shared.SearchableDateRange{
 		// 							{Field: "Timestamp", Min: nil, Max: timeNow}, // Valid
 		// 							{Field: "Timestamp", Min: timeNow, Max: nil}, // Valid
 		// 						},
@@ -276,11 +278,11 @@ func TestValidateSearchParameters(t *testing.T) {
 		// 	// Missing 'Min' or 'Max' in Duration Range - Should be valid
 		// 	{
 		// 		name: "Missing 'Min' or 'Max' in Duration Range",
-		// 		searchParams: []SearchAggregation{
+		// 		searchParams: []shared.SearchAggregation{
 		// 			{
-		// 				Params: []SearchParameter{
+		// 				Params: []shared.SearchParameter{
 		// 					{
-		// 						DurationParams: []SearchableDurationRange{
+		// 						DurationParams: []shared.SearchableDurationRange{
 		// 							{Field: "Duration", Min: nil, Max: &validDuration},
 		// 							{Field: "Duration", Min: &validDuration, Max: nil},
 		// 						},
@@ -297,7 +299,7 @@ func TestValidateSearchParameters(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			err := ValidateSearchParameters(tt.searchParams, tt.queryableFields)
+			err := shared.ValidateSearchParameters(tt.searchParams, tt.queryableFields)
 			if tt.expectedError != "" {
 				if err == nil {
 					t.Errorf("Expected error '%s', but got no error", tt.expectedError)
@@ -316,38 +318,38 @@ func TestValidateSearchParameters(t *testing.T) {
 func TestValidateResultOptions(t *testing.T) {
 	tests := []struct {
 		name           string
-		resultOptions  SearchResultOptions
+		resultOptions  shared.SearchResultOptions
 		readableFields map[string]bool
 		expectedError  string
 		maxPageSize    uint
 	}{
 		{
 			name:           "Valid Result Options",
-			resultOptions:  SearchResultOptions{Skip: 0, Limit: 5},
+			resultOptions:  shared.SearchResultOptions{Skip: 0, Limit: 5},
 			readableFields: map[string]bool{"GameID": true},
 			expectedError:  "",
 		},
 		{
 			name:           "Invalid Limit",
-			resultOptions:  SearchResultOptions{Skip: 0, Limit: 0},
+			resultOptions:  shared.SearchResultOptions{Skip: 0, Limit: 0},
 			readableFields: map[string]bool{"GameID": true},
 			expectedError:  "limit must be a positive integer",
 		},
 		{
 			name:           "Invalid Pick Field with Wildcard Allowed",
-			resultOptions:  SearchResultOptions{PickFields: []string{"Header.NonExistentField"}},
+			resultOptions:  shared.SearchResultOptions{PickFields: []string{"Header.NonExistentField"}},
 			readableFields: map[string]bool{"Header.*": true},
 			expectedError:  "returning field 'Header.NonExistentField' is not permitted (1)",
 		},
 		{
 			name:           "Invalid Omit Field with Wildcard Allowed",
-			resultOptions:  SearchResultOptions{OmitFields: []string{"Header.NonExistentField"}},
+			resultOptions:  shared.SearchResultOptions{OmitFields: []string{"Header.NonExistentField"}},
 			readableFields: map[string]bool{"Header.*": true},
 			expectedError:  "omitting field 'Header.NonExistentField' is not permitted",
 		},
 		{
 			name:           "Disallowed Pick Field Even with Wildcard",
-			resultOptions:  SearchResultOptions{PickFields: []string{"Header.FileStamp"}},
+			resultOptions:  shared.SearchResultOptions{PickFields: []string{"Header.FileStamp"}},
 			readableFields: map[string]bool{"Header.*": true, "Header.FileStamp": false},
 			expectedError:  "returning field 'Header.FileStamp' is strictly forbidden (2)",
 		},
@@ -356,7 +358,7 @@ func TestValidateResultOptions(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			err := ValidateResultOptions(tt.resultOptions, tt.readableFields)
+			err := shared.ValidateResultOptions(tt.resultOptions, tt.readableFields)
 			if tt.expectedError != "" {
 				if err == nil {
 					t.Errorf("Expected error '%s', but got no error", tt.expectedError)

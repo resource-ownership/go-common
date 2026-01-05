@@ -1,5 +1,5 @@
 // Package common provides shared domain types and infrastructure for the replay-api.
-package common
+package shared
 
 import (
 	"context"

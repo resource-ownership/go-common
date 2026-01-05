@@ -68,7 +68,7 @@
 //	    EntityType:          "myentities",
 //	}
 //	common.GetQueryServiceRegistry().Register("myentities", service)
-package common
+package shared
 
 import (
 	"sync"
