@@ -376,3 +376,178 @@ func ValidateResultOptions(resultOptions SearchResultOptions, returnableFields m
 
 	return nil
 }
+
+// SearchAggregationBuilder provides fluent API for building search aggregations
+type SearchAggregationBuilder struct {
+	aggregation SearchAggregation
+}
+
+func NewSearchAggregation() *SearchAggregationBuilder {
+	return &SearchAggregationBuilder{
+		aggregation: SearchAggregation{},
+	}
+}
+
+func (b *SearchAggregationBuilder) NewParam() *SearchAggregationBuilder {
+	b.aggregation.Params = append(b.aggregation.Params, SearchParameter{})
+	return b
+}
+
+func (b *SearchAggregationBuilder) WithValueParam(field string, values ...interface{}) *SearchAggregationBuilder {
+	if len(b.aggregation.Params) == 0 {
+		b.NewParam()
+	}
+	lastParam := &b.aggregation.Params[len(b.aggregation.Params)-1]
+	lastParam.ValueParams = append(lastParam.ValueParams, SearchableValue{
+		Field:  field,
+		Values: values,
+	})
+	return b
+}
+
+func (b *SearchAggregationBuilder) WithValueParamWithOperator(field string, operator SearchOperator, values ...interface{}) *SearchAggregationBuilder {
+	if len(b.aggregation.Params) == 0 {
+		b.NewParam()
+	}
+	lastParam := &b.aggregation.Params[len(b.aggregation.Params)-1]
+	lastParam.ValueParams = append(lastParam.ValueParams, SearchableValue{
+		Field:    field,
+		Values:   values,
+		Operator: operator,
+	})
+	return b
+}
+
+func (b *SearchAggregationBuilder) WithDateParam(field string, min, max *time.Time) *SearchAggregationBuilder {
+	if len(b.aggregation.Params) == 0 {
+		b.NewParam()
+	}
+	lastParam := &b.aggregation.Params[len(b.aggregation.Params)-1]
+	lastParam.DateParams = append(lastParam.DateParams, SearchableDateRange{
+		Field: field,
+		Min:   min,
+		Max:   max,
+	})
+	return b
+}
+
+func (b *SearchAggregationBuilder) WithNumericRange(field string, min, max *int) *SearchAggregationBuilder {
+	if len(b.aggregation.Params) == 0 {
+		b.NewParam()
+	}
+	lastParam := &b.aggregation.Params[len(b.aggregation.Params)-1]
+	
+	rangeValues := make([]interface{}, 0, 2)
+	if min != nil {
+		rangeValues = append(rangeValues, *min)
+	}
+	if max != nil {
+		rangeValues = append(rangeValues, *max)
+	}
+	
+	if len(rangeValues) > 0 {
+		lastParam.ValueParams = append(lastParam.ValueParams, SearchableValue{
+			Field:  field,
+			Values: rangeValues,
+		})
+	}
+	return b
+}
+
+func (b *SearchAggregationBuilder) WithOperator(operator SearchOperator) *SearchAggregationBuilder {
+	if len(b.aggregation.Params) == 0 {
+		b.NewParam()
+	}
+	lastParam := &b.aggregation.Params[len(b.aggregation.Params)-1]
+	// Apply operator to the last added param of each type
+	if len(lastParam.ValueParams) > 0 {
+		lastParam.ValueParams[len(lastParam.ValueParams)-1].Operator = operator
+	}
+	if len(lastParam.DateParams) > 0 {
+		// Date params don't have operators in current design
+	}
+	if len(lastParam.DurationParams) > 0 {
+		// Duration params don't have operators in current design
+	}
+	return b
+}
+
+func (b *SearchAggregationBuilder) Build() SearchAggregation {
+	return b.aggregation
+}
+
+// SearchResultOptionsBuilder provides fluent API for building search result options
+type SearchResultOptionsBuilder struct {
+	options SearchResultOptions
+}
+
+func NewSearchResultOptionsBuilder() *SearchResultOptionsBuilder {
+	return &SearchResultOptionsBuilder{}
+}
+
+func (b *SearchResultOptionsBuilder) WithLimit(limit uint) *SearchResultOptionsBuilder {
+	b.options.Limit = limit
+	return b
+}
+
+func (b *SearchResultOptionsBuilder) WithSkip(skip uint) *SearchResultOptionsBuilder {
+	b.options.Skip = skip
+	return b
+}
+
+func (b *SearchResultOptionsBuilder) WithPickFields(fields ...string) *SearchResultOptionsBuilder {
+	b.options.PickFields = fields
+	return b
+}
+
+func (b *SearchResultOptionsBuilder) WithOmitFields(fields ...string) *SearchResultOptionsBuilder {
+	b.options.OmitFields = fields
+	return b
+}
+
+func (b *SearchResultOptionsBuilder) Build() SearchResultOptions {
+	return b.options
+}
+
+// SearchBuilder provides fluent API for building complete search objects
+type SearchBuilder struct {
+	search Search
+}
+
+func NewSearchBuilder() *SearchBuilder {
+	return &SearchBuilder{
+		search: Search{},
+	}
+}
+
+func (b *SearchBuilder) WithAggregation(aggregation SearchAggregation) *SearchBuilder {
+	b.search.SearchParams = append(b.search.SearchParams, aggregation)
+	return b
+}
+
+func (b *SearchBuilder) WithResultOptions(options SearchResultOptions) *SearchBuilder {
+	b.search.ResultOptions = options
+	return b
+}
+
+func (b *SearchBuilder) WithSort(field string, direction SortDirectionKey) *SearchBuilder {
+	b.search.SortOptions = append(b.search.SortOptions, SortableField{
+		Field:     field,
+		Direction: direction,
+	})
+	return b
+}
+
+func (b *SearchBuilder) WithLimit(limit uint) *SearchBuilder {
+	b.search.ResultOptions.Limit = limit
+	return b
+}
+
+func (b *SearchBuilder) WithSkip(skip uint) *SearchBuilder {
+	b.search.ResultOptions.Skip = skip
+	return b
+}
+
+func (b *SearchBuilder) Build() Search {
+	return b.search
+}
