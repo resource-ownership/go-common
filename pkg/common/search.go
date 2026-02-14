@@ -548,6 +548,23 @@ func (b *SearchBuilder) WithSkip(skip uint) *SearchBuilder {
 	return b
 }
 
+// WithVisibilityOptions sets the visibility options for RLS (Row-Level Security)
+// This is required for multi-tenant queries to properly filter by tenant
+func (b *SearchBuilder) WithVisibilityOptions(options SearchVisibilityOptions) *SearchBuilder {
+	b.search.VisibilityOptions = options
+	return b
+}
+
+// WithVisibilityFromContext sets visibility options from the request context
+// This automatically extracts ResourceOwner and sets the intended audience level
+func (b *SearchBuilder) WithVisibilityFromContext(ctx context.Context, audienceLevel IntendedAudienceKey) *SearchBuilder {
+	b.search.VisibilityOptions = SearchVisibilityOptions{
+		RequestSource:    GetResourceOwner(ctx),
+		IntendedAudience: audienceLevel,
+	}
+	return b
+}
+
 func (b *SearchBuilder) Build() Search {
 	return b.search
 }
