@@ -19,6 +19,9 @@ const (
 	ResourceTypePayment        ResourceType = "Payments"
 	ResourceTypeWallet         ResourceType = "Wallets"
 	ResourceTypeTag            ResourceType = "Tags"
+	ResourceTypeSquad          ResourceType = "Squads"
+	ResourceTypeTeamVault      ResourceType = "TeamVaults"
+	ResourceTypeInventoryItem  ResourceType = "InventoryItems"
 )
 
 var ResourceTypes = []ResourceType{
@@ -31,11 +34,15 @@ var ResourceTypes = []ResourceType{
 	ResourceTypePayment,
 	ResourceTypeWallet,
 	ResourceTypeTag,
+	ResourceTypeSquad,
+	ResourceTypeTeamVault,
+	ResourceTypeInventoryItem,
 }
 
 var ResourceKeyMap = map[ResourceType]string{
-	ResourceTypeGroup: "group_id",
-	ResourceTypeUser:  "user_id",
+	ResourceTypeGroup:     "group_id",
+	ResourceTypeUser:      "user_id",
+	ResourceTypeTeamVault: "squad_id",
 }
 
 func GetResourceFieldID(resourcePart string) (string, error) {
